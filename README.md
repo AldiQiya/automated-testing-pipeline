@@ -1,3 +1,4 @@
+HEAD
 # 🚀 Automated Testing Pipeline
 
 ![Tests](https://github.com/AldiQiya/automated-testing-pipeline/actions/workflows/test.yml/badge.svg)
@@ -19,3 +20,6 @@ pytest test_app.py -v
 - PyTest
 - GitHub Actions
 - Requests Library
+# automated-testing-pipeline
+"Mini CI/CD Pipeline untuk Pengujian Otomatis"
+5b04f2a158474ec1bdb30152664aa366b9febaa3
