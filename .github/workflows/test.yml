@@ -1,0 +1,55 @@
+name: Automated Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Run Automated Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest requests pytest-html pytest-cov
+    
+    - name: Run Tests
+      run: |
+        pytest test_app.py -v --html=report.html --self-contained-html --cov=app --cov-report=html
+      continue-on-error: false
+    
+    - name: Upload Test Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          report.html
+          htmlcov/
+    
+    - name: Test Summary
+      if: always()
+      run: |
+        echo "### Test Results Summary 📊" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        pytest test_app.py --tb=no -v >> $GITHUB_STEP_SUMMARY || true
+    
+    - name: Notify Success
+      if: success()
+      run: echo "✅ All tests passed successfully!"
+    
+    - name: Notify Failure
+      if: failure()
+      run: echo "❌ Tests failed! Please check the logs."
